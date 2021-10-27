@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+<h3>Test ws with compression</h3>
+
+<div>
+    Client sends these messages:
+    <pre>
+{"messageType":"MESSAGE_1"}
+{"messageType":"MESSAGE_2"}
+{"messageType":"MESSAGE_3"}
+{"messageType":"MESSAGE_4"}
+    </pre>
+</div>
+
+<div>
+    Receives these as echo:
+    <pre id="pre"></pre>
+</div>
+
+<script>
+    const ws = new WebSocket("ws://localhost:8080/ws")
+    ws.onopen = () => {
+        console.log("ws open");
+        send("MESSAGE_1");
+        send("MESSAGE_2");
+        send("MESSAGE_3");
+        send("MESSAGE_4");
+    }
+
+    const el = document.getElementById("pre")
+    const responses = [];
+    ws.onmessage = msg => {
+        responses.push(msg.data);
+        el.innerText = responses.join("\n");
+    }
+
+    function send(type) {
+        ws.send(JSON.stringify({messageType: type}));
+    }
+</script>
+
+</body>
+</html>
